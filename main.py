@@ -1,5 +1,7 @@
 import pygame
 from snake import create_snake, draw_snake, has_collision
+from food import create_food, draw_food
+from score import draw_score
 from enum import Enum
 
 class Directions(Enum):
@@ -11,15 +13,16 @@ class Directions(Enum):
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Snake Game")
-screen.fill((255, 200, 150))
 
-screen_width = screen.get_width()
-screen_height = screen.get_height()
+score = 0
+font = pygame.font.SysFont(None, 36)
 
 cell_size = 10
 snake_direction = Directions.UP
 update_snake = 0
+
 snake = create_snake(screen, cell_size)
+food = create_food(screen, cell_size, snake)
 
 running = True
 while running:
@@ -46,7 +49,13 @@ while running:
     # Update the snake
     if update_snake > 99:
         update_snake = 0
-        snake = snake[-1:] + snake[:-1]
+
+        if snake[0] == food:
+            snake = [food] + snake
+            score += 1
+            food = create_food(screen, cell_size, snake)
+        else:
+            snake = snake[-1:] + snake[:-1]
 
         if snake_direction == Directions.UP:
             snake[0][0] = snake[1][0]
@@ -63,13 +72,17 @@ while running:
 
     screen.fill((255, 200, 150))
     draw_snake(screen, snake, cell_size)
+    draw_food(screen, food, cell_size)
+    draw_score(screen, score, font)
 
 
     pygame.display.update()
     update_snake += 1
 
+    # Check for collisions
     if has_collision(screen, snake):
         snake = create_snake(screen, cell_size)
         snake_direction = Directions.UP
+        score = 0
 
 pygame.quit()
