@@ -1,5 +1,5 @@
 import pygame
-from snake import create_snake, draw_snake
+from snake import create_snake, draw_snake, has_collision
 from enum import Enum
 
 class Directions(Enum):
@@ -13,6 +13,8 @@ screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption("Snake Game")
 screen.fill((255, 200, 150))
 
+screen_width = screen.get_width()
+screen_height = screen.get_height()
 
 cell_size = 10
 snake_direction = Directions.UP
@@ -65,5 +67,9 @@ while running:
 
     pygame.display.update()
     update_snake += 1
+
+    if has_collision(screen, snake):
+        snake = create_snake(screen, cell_size)
+        snake_direction = Directions.UP
 
 pygame.quit()

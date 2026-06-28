@@ -19,3 +19,9 @@ def draw_snake(screen : pygame.Surface, snake : list[list[int]], cell_size : int
             pygame.draw.rect(screen, body_outer, (x[0], x[1], cell_size, cell_size))
             pygame.draw.rect(screen, (255, 0, 0), (x[0] + 1, x[1] + 1, cell_size - 2, cell_size - 2))
             head = 0
+
+def has_collision(screen : pygame.Surface, snake : list[list[int]]) -> bool:
+    head = snake[0]
+    if head[0] < 0 or head[0] >= screen.get_width() or head[1] < 0 or head[1] >= screen.get_height():
+        return True
+    return head in snake[1:]
